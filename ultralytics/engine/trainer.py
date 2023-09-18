@@ -196,7 +196,7 @@ class BaseTrainer:
         else:
             self._do_train(world_size)
 
-        return return self.num_samples, None
+        return self.num_samples, None
 
     def _setup_ddp(self, world_size):
         """Initializes and sets the DistributedDataParallel parameters for training."""
