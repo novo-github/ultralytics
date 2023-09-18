@@ -99,6 +99,8 @@ class BaseValidator:
         self.plots = {}
         self.callbacks = _callbacks or callbacks.get_default_callbacks()
 
+        self.num_samples = 0
+
     @smart_inference_mode()
     def __call__(self, trainer=None, model=None):
         """
@@ -166,6 +168,7 @@ class BaseValidator:
             # Inference
             with dt[1]:
                 preds = model(batch['img'], augment=augment)
+                self.num_samples += batch['img'].shape[0]
 
             # Loss
             with dt[2]:

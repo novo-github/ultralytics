@@ -271,7 +271,7 @@ class Model(nn.Module):
         validator = (validator or self._smart_load('validator'))(args=args, _callbacks=self.callbacks)
         validator(model=self.model)
         self.metrics = validator.metrics
-        return validator.metrics
+        return validator.num_samples, validator.metrics
 
     def benchmark(self, **kwargs):
         """
@@ -341,7 +341,11 @@ class Model(nn.Module):
             self.model, _ = attempt_load_one_weight(ckpt)
             self.overrides = self.model.args
             self.metrics = getattr(self.trainer.validator, 'metrics', None)  # TODO: no metrics returned by DDP
-        return self.metrics
+        
+        total_loss = torch.sum(self.trainer.tloss).float()
+
+        # return self.trainer.num_samples, float(total_loss)
+        return self.metrics, self.trainer.num_samples, float(total_loss)
 
     def tune(self, use_ray=False, iterations=10, *args, **kwargs):
         """
