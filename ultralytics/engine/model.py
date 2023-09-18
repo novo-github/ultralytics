@@ -344,9 +344,7 @@ class Model(nn.Module):
             self.metrics = getattr(self.trainer.validator, 'metrics', None)  # TODO: no metrics returned by DDP
         
         total_loss = torch.sum(self.trainer.tloss).float()
-
-        # return self.trainer.num_samples, float(total_loss)
-        return self.metrics, self.trainer.num_samples, float(total_loss)
+        return self.trainer.num_samples, float(total_loss)  
 
     def tune(self, use_ray=False, iterations=10, *args, **kwargs):
         """
